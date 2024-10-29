@@ -1,20 +1,26 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
+
+use App\Http\Controllers\VisitanteController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return auth()->check() ? redirect()->route('visitantes.index') : redirect()->route('login');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/visitantes', [VisitanteController::class, 'index'])->name('visitantes.index');
+    Route::get('/visitantes/create', [VisitanteController::class, 'create'])->name('visitantes.create');
+    Route::post('/visitantes', [VisitanteController::class, 'store'])->name('visitantes.store');
+    Route::get('/visitantes/{visitante}/edit', [VisitanteController::class, 'edit'])->name('visitantes.edit');
+    Route::post('/visitantes/{visitante}', [VisitanteController::class, 'update'])->name('visitantes.update');
+    Route::delete('/visitantes/{visitante}', [VisitanteController::class, 'destroy'])->name('visitantes.destroy');
+    Route::get('/visitantes/{visitante}', [VisitanteController::class, 'show'])->name('visitantes.show');
+    Route::get('/visitantes/search', [VisitanteController::class, 'search'])->name('visitantes.search');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
